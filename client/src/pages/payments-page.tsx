@@ -1,29 +1,18 @@
-```tsx
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { CreditCard, Receipt, Trash2, Star, DollarSign, TrendingUp, Clock, Loader2, Plus, Building2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { useQuery as useRQ } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { apiUrl } from "@/lib/api-config";
 
-function formatZAR(cents: number) {
-  return `R${(cents / 100).toFixed(2)}`;
+function formatZAR(cents: number): string {
+  return "R" + (cents / 100).toFixed(2);
 }
-
-const statusColors: Record<string, string> = {
-  authorized: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
-  captured: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
-  cancelled: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
-  refunded: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
-};
 
 export default function PaymentsPage() {
   const { user } = useAuth();
@@ -49,46 +38,62 @@ export default function PaymentsPage() {
 
 function TutorEarningsView() {
   const { user } = useAuth();
+  const { toast } = useToast();
 
   const { data: earnings, isLoading: earningsLoading } = useQuery({
     queryKey: ["/api/tutor-earnings"],
     enabled: !!user,
   });
 
-  const { data: paymentsList, isLoading: paymentsLoading } = useQuery({
+  const { data: paymentsList } = useQuery({
     queryKey: ["/api/payments"],
     enabled: !!user,
   });
 
   const { data: rate } = useQuery({
     queryKey: ["/api/tutor-rates", user?.id],
-    queryFn: () =>
-      fetch(apiUrl(`/api/tutor-rates/${user!.id}`), {
+    queryFn: async () => {
+      if (!user?.id) return null;
+      const res = await fetch(apiUrl(`/api/tutor-rates/${user.id}`), {
         credentials: "include",
-      }).then((r) => r.json()),
-    enabled: !!user,
+      });
+      return res.json();
+    },
+    enabled: !!user?.id,
   });
 
   const [newRate, setNewRate] = useState("");
   const [updatingRate, setUpdatingRate] = useState(false);
-  const { toast } = useToast();
 
   const handleUpdateRate = async () => {
-    const rateInCents = Math.round(parseFloat(newRate) * 100);
-    if (isNaN(rateInCents) || rateInCents < 0) return;
+    const parsed = parseFloat(newRate);
+    if (isNaN(parsed) || parsed < 0) {
+      toast({
+        title: "Invalid input",
+        description: "Enter a valid amount",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const rateInCents = Math.round(parsed * 100);
 
     setUpdatingRate(true);
     try {
       await apiRequest("POST", "/api/tutor-rates", {
         hourlyRate: rateInCents,
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/tutor-rates"] });
-      toast({ title: "Rate updated" });
+
+      queryClient.invalidateQueries({
+        queryKey: ["/api/tutor-rates"],
+      });
+
+      toast({ title: "Rate updated successfully" });
       setNewRate("");
     } catch (err: any) {
       toast({
-        title: "Failed",
-        description: err.message,
+        title: "Failed to update rate",
+        description: err?.message || "Something went wrong",
         variant: "destructive",
       });
     } finally {
@@ -97,7 +102,6 @@ function TutorEarningsView() {
   };
 
   const e = earnings as any;
-  const payments = (paymentsList || []) as any[];
 
   return (
     <div className="space-y-6">
@@ -124,9 +128,10 @@ function TutorEarningsView() {
           <CardTitle>Your Hourly Rate</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <p className="text-lg font-semibold">
-              Current: {formatZAR(rate?.hourlyRate ?? 15000)}/hour
+              Current:{" "}
+              {formatZAR((rate as any)?.hourlyRate ?? 15000)} / hour
             </p>
 
             <Input
@@ -136,7 +141,7 @@ function TutorEarningsView() {
               onChange={(e) => setNewRate(e.target.value)}
             />
 
-            <Button onClick={handleUpdateRate}>
+            <Button onClick={handleUpdateRate} disabled={updatingRate}>
               {updatingRate ? (
                 <Loader2 className="animate-spin w-4 h-4" />
               ) : (
@@ -149,4 +154,18 @@ function TutorEarningsView() {
     </div>
   );
 }
-```
+
+function LearnerPaymentsView() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Payments</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="text-muted-foreground">
+          Payment features coming soon.
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
