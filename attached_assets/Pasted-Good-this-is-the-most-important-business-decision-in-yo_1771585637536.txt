@@ -1,0 +1,244 @@
+Good — this is the most important business decision in your entire app. Let’s design it properly so it works like Uber, but for tutoring.
+
+💳 The Best Payment System for Your App (Inside the App)
+
+You want:
+
+Everything happens inside your app
+
+No redirect to external sites
+
+Smooth like Uber
+
+👉 The correct approach is:
+
+🥇 Use Stripe (Embedded Payments) + Your Own Flow
+
+This gives you:
+
+Full in-app experience
+
+Secure payments
+
+Tutor payouts
+
+Global support (including South Africa)
+
+🧠 How Your Payment System Should Work (Final Design)
+1) Before session — Payment Hold (IMPORTANT)
+
+When learner books:
+
+Flow:
+
+Learner selects tutor
+
+Sees price:
+
+R150/hour × 1 hour = R150
++ platform fee (e.g. R20)
+= R170 total
+
+Clicks “Confirm & Pay”
+
+👉 System does:
+
+Pre-authorize (hold) the money
+
+NOT actually charge yet
+
+✅ This protects tutor from no-shows
+
+2) During session — Live tracking
+
+Inside session:
+
+Timer starts
+
+Cost updates in real-time (optional)
+
+3) After session — Final charge
+
+When session ends:
+
+👉 System:
+
+Captures payment (final charge)
+
+Adjusts amount if needed (time-based)
+
+Example:
+
+Booked 1 hour → used 45 mins
+
+Charge adjusted to: R112.50
+
+4) Tutor gets paid
+
+System:
+
+Keeps platform fee
+
+Sends tutor their portion
+
+👉 Like Uber:
+
+You take commission
+
+Tutor gets payout
+
+🔁 Full Flow (Clean Version)
+Request Session
+   ↓
+Confirm & Pay (HOLD money)
+   ↓
+Tutor Accepts
+   ↓
+Session Starts
+   ↓
+Session Ends
+   ↓
+Capture Payment
+   ↓
+Split:
+  → Tutor payout
+  → Platform fee
+🧱 What You Need Technically
+Backend (VERY IMPORTANT)
+
+You must track:
+
+Tables:
+
+users
+
+sessions
+
+payments
+
+transactions
+
+payouts
+
+Payment statuses
+
+Each session should have:
+
+pending
+authorized (money held)
+captured (paid)
+cancelled
+refunded
+🔥 MVP (Start SIMPLE, then scale)
+
+Since you’re still building:
+
+Step 1 — Use “Mock Payments” first
+
+Inside your app:
+
+Fake card input:
+
+Card: 4242 4242 4242 4242
+
+Simulate:
+
+success
+
+failure
+
+insufficient funds
+
+👉 This lets you test everything without real money
+
+Step 2 — Upgrade to Stripe later
+
+Replace mock with:
+
+Stripe Payment Intents
+
+Stripe Connect (for tutor payouts)
+
+💡 Key UX Screens You Need
+1) Payment confirmation screen
+
+Before booking:
+
+Price breakdown
+
+Duration
+
+Tutor name
+
+“Confirm & Pay”
+
+2) Payment method screen
+
+User can:
+
+Add card
+
+Save card
+
+Choose default
+
+3) Session payment status
+
+Inside session:
+
+“Payment secured”
+
+Timer + cost
+
+4) Receipt screen
+
+After session:
+
+Amount paid
+
+Tutor
+
+Duration
+
+Date
+
+5) Tutor earnings dashboard
+
+Tutor sees:
+
+Total earnings
+
+Pending payouts
+
+Completed sessions
+
+⚠️ Critical Rules (don’t ignore these)
+1) NEVER charge before session starts
+
+→ Always authorize first
+
+2) NEVER store raw card details
+
+→ Let Stripe handle it
+
+3) Always handle:
+
+cancellations
+
+no-shows
+
+refunds
+
+💥 What Makes Your App Powerful
+
+You’re combining:
+
+📘 Textbook
+
+✏️ Whiteboard
+
+🎥 Session
+
+💳 Payments
+
+👉 This becomes a complete tutoring marketplace

@@ -1,0 +1,189 @@
+This is where your app can go from “good” to elite-level EdTech—so let’s design it properly, not just “a video call”.
+
+🧠 What should happen when the session time arrives
+
+When the scheduled time hits:
+
+1) Smart session trigger
+
+Both users get:
+
+🔔 Push notification: “Your Maths session is starting now”
+
+In-app banner:
+“Join Session” button
+
+Clicking that takes them into a live session room.
+
+🎥 How the session should be held (best approach)
+
+Don’t just do Zoom-style video.
+Your app should combine:
+
+1) Live Video + Audio (WebRTC)
+
+Core layer:
+
+Student and tutor can:
+
+See each other (optional)
+
+Talk in real-time
+
+👉 Use WebRTC (this is what Zoom/Google Meet uses)
+
+2) Shared Interactive Whiteboard (THIS is the core)
+
+This is more important than video.
+
+Inside the session:
+
+Both users draw on the same board in real time
+
+You see each other’s strokes instantly
+
+Tutor can:
+
+Solve equations step-by-step
+
+Draw graphs
+
+Sketch geometry
+
+Student can:
+
+Try answers
+
+Ask visually
+
+👉 This is your main teaching surface
+
+3) Live Textbook Sync (killer feature 🔥)
+
+Inside the session:
+
+Tutor can open a textbook page
+
+Student automatically sees the same page
+
+Both can:
+
+Highlight
+
+Draw
+
+Point to questions
+
+This turns your app into:
+👉 A shared digital classroom
+
+4) Session Chat (side channel)
+
+Even during the session:
+
+Send quick messages
+
+Drop links
+
+Share files
+
+5) Recording (optional but powerful)
+
+Automatically:
+
+Record:
+
+Whiteboard
+
+Audio
+
+(Optional video)
+
+After session:
+
+Save recording
+
+Student can rewatch later
+
+🧩 Full Session Flow
+Before session
+
+Tutor accepts request
+
+Session scheduled
+
+Payment pre-authorized
+
+At session time
+
+Both get notification
+
+Click Join Session
+
+Enter session room
+
+Inside session
+
+Video (optional)
+
+Audio (important)
+
+Shared whiteboard (core)
+
+Textbook sync
+
+Chat
+
+After session
+
+Session ends
+
+Payment captured
+
+Recording saved
+
+Rating/review prompt
+
+🏗️ What your “Session Room” should look like
+
+Layout:
+
+-------------------------------------
+| Video (small)   |   Textbook      |
+|                 |   OR            |
+|                 |   Whiteboard    |
+-------------------------------------
+| Chat panel                     |
+-------------------------------------
+| Controls: Mic | Cam | Record | End |
+🔥 What makes YOUR app different (important insight)
+
+Most apps:
+
+Zoom → just talking
+
+WhatsApp → just messaging
+
+Your app:
+
+Combines:
+
+📘 Textbook
+
+✏️ Whiteboard
+
+🎥 Session
+
+💬 Chat
+
+👉 That’s a complete maths learning environment
+
+⚠️ What NOT to do
+
+Don’t:
+
+Build only video calls → weak for maths
+
+Ignore whiteboard sync → biggest mistake
+
+Skip session entry flow → confusing UX

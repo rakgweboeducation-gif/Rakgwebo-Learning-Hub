@@ -1,0 +1,116 @@
+The Chat & Whiteboard functionality is the collaborative help space inside your app. It combines normal messaging with a live drawing board so learners can explain maths visually, not just with text.
+
+Here’s what it does in simple terms:
+
+1) Normal chat (like WhatsApp or Messenger)
+
+Inside the Chat module, users can:
+
+Send text messages
+
+Send emojis
+
+Attach images or documents
+
+Send voice notes
+
+See messages in real time
+
+So it works like a regular messaging app between:
+
+Learner ↔ Learner
+
+Learner ↔ Tutor
+
+Learner ↔ Teacher
+
+2) Interactive whiteboard inside the chat
+
+Each conversation can open a shared whiteboard where users can:
+
+Draw equations
+
+Sketch graphs
+
+Show geometric constructions
+
+Highlight steps in a solution
+
+Erase and redo work
+
+This is especially useful for maths because:
+
+Many concepts need diagrams
+
+It’s easier to explain visually than in text
+
+3) Whiteboard recording (1-minute explanation)
+
+On the whiteboard, a user can:
+
+Click Record
+
+Solve or explain something on the board
+
+Stop recording (max: 60 seconds)
+
+The app will:
+
+Turn that into a short video
+
+Send it directly into the chat as a message
+
+So it becomes like:
+
+“Here’s how to solve this question”
+(with a short visual explanation)
+
+4) How it connects to the textbook
+
+When a learner highlights or writes on a textbook:
+
+They click Ask for Help
+
+A chat opens with another user
+
+The recipient sees:
+
+The exact page
+
+The highlighted/drawn part
+
+They can reply using:
+
+Text
+
+Voice
+
+Whiteboard explanation
+
+Real example scenario
+
+Grade 11 learner is stuck on a trigonometry question.
+
+They highlight the question in the textbook.
+
+Click Ask for Help.
+
+Send it to a friend or tutor.
+
+Tutor opens chat and:
+
+Opens whiteboard
+
+Draws triangle
+
+Records a 45-second explanation
+
+Learner watches the explanation and understands.
+
+In short
+
+Chat = conversation
+Whiteboard = visual explanation space
+Recording = short video solution
+
+Together, they create a maths-focused communication system, not just a normal messaging app.
