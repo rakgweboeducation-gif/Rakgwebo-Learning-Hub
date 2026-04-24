@@ -1,13 +1,13 @@
-```ts
+// src/lib/api-config.ts
+
 function isCapacitor(): boolean {
   return (
     typeof window !== "undefined" &&
-    !!(window as any)?.Capacitor?.isNativePlatform?.()
+    !!(window as any).Capacitor?.isNativePlatform?.()
   );
 }
 
 function getApiBaseUrl(): string {
-  // If running inside Capacitor (mobile app)
   if (isCapacitor()) {
     return (
       import.meta.env.VITE_API_URL ||
@@ -15,16 +15,16 @@ function getApiBaseUrl(): string {
     );
   }
 
-  // In browser (Render / normal web)
+  // browser / web → use relative API
   return "";
 }
 
-export const API_BASE: string = getApiBaseUrl();
+export const API_BASE = getApiBaseUrl();
 
+// ✅ THIS IS THE IMPORTANT EXPORT
 export function apiUrl(path: string): string {
   if (!path.startsWith("/")) {
     path = "/" + path;
   }
   return API_BASE + path;
 }
-```
