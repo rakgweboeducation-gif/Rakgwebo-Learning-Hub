@@ -10,7 +10,6 @@ import {
   Settings,
   LogOut,
   Menu,
-  X,
   BrainCircuit,
   HelpCircle,
   CreditCard,
@@ -18,7 +17,10 @@ import {
   Video,
 } from "lucide-react";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
+
+// ✅ FIX: use RELATIVE import instead of alias
+import { cn } from "../lib/utils";
+
 import { Button } from "../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Sheet, SheetContent } from "../components/ui/sheet";
@@ -161,28 +163,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
 
-        <Link href="/profile">
-          <div
-            className="flex items-center gap-3 mb-4 px-2 cursor-pointer rounded-lg hover:bg-slate-800 py-2 transition-colors"
-            onClick={() => setIsMobileOpen(false)}
-          >
-            <Avatar className="h-9 w-9 border border-slate-700">
-              <AvatarImage src={user?.avatar || undefined} />
-              <AvatarFallback className="bg-slate-800 text-slate-300">
-                {getInitials(user?.username)}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">
-                {user?.username}
-              </p>
-              <p className="text-xs text-slate-400 capitalize truncate">
-                {user?.role}
-              </p>
-            </div>
-          </div>
-        </Link>
-
         <Button
           variant="destructive"
           className="w-full justify-start pl-3"
@@ -197,21 +177,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex h-screen bg-background overflow-hidden">
-      {/* Desktop Sidebar */}
       <aside className="hidden md:block w-64 flex-shrink-0 shadow-xl z-20">
         <SidebarContent />
       </aside>
 
-      {/* Mobile Sidebar */}
       <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>
         <SheetContent side="left" className="p-0 w-72 border-r-0">
           <SidebarContent />
         </SheetContent>
       </Sheet>
 
-      {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden bg-background">
-        {/* Mobile Header */}
         <div className="md:hidden flex items-center justify-between p-4 bg-slate-900 text-white border-b border-slate-800">
           <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
             Rakgwebo
