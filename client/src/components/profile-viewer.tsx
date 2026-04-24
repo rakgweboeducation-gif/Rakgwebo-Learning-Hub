@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Dialog, DialogContent } from "../components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { cn } from "@/lib/utils";
+
+// ✅ FIX: use relative path instead of alias
+import { cn } from "../lib/utils";
 
 interface TappableAvatarProps {
   src?: string | null;
@@ -11,13 +13,22 @@ interface TappableAvatarProps {
   "data-testid"?: string;
 }
 
-export function TappableAvatar({ src, fallback, className, name, "data-testid": testId }: TappableAvatarProps) {
+export function TappableAvatar({
+  src,
+  fallback,
+  className,
+  name,
+  "data-testid": testId,
+}: TappableAvatarProps) {
   const [open, setOpen] = useState(false);
 
   return (
     <>
       <Avatar
-        className={cn("cursor-pointer ring-offset-background transition-all hover:ring-2 hover:ring-primary/50 hover:ring-offset-1", className)}
+        className={cn(
+          "cursor-pointer ring-offset-background transition-all hover:ring-2 hover:ring-primary/50 hover:ring-offset-1",
+          className,
+        )}
         onClick={(e) => {
           e.stopPropagation();
           if (src) setOpen(true);
@@ -29,7 +40,10 @@ export function TappableAvatar({ src, fallback, className, name, "data-testid": 
       </Avatar>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-md p-2 bg-background/95 backdrop-blur-sm" data-testid="dialog-avatar-preview">
+        <DialogContent
+          className="sm:max-w-md p-2 bg-background/95 backdrop-blur-sm"
+          data-testid="dialog-avatar-preview"
+        >
           <div className="flex flex-col items-center gap-3 p-4">
             {name && <p className="text-lg font-semibold">{name}</p>}
             <img
@@ -52,7 +66,12 @@ interface ExpandableBioProps {
   "data-testid"?: string;
 }
 
-export function ExpandableBio({ bio, clampLines = 2, className, "data-testid": testId }: ExpandableBioProps) {
+export function ExpandableBio({
+  bio,
+  clampLines = 2,
+  className,
+  "data-testid": testId,
+}: ExpandableBioProps) {
   const [expanded, setExpanded] = useState(false);
 
   const needsExpansion = bio.length > 80 || bio.split("\n").length > clampLines;
@@ -62,11 +81,18 @@ export function ExpandableBio({ bio, clampLines = 2, className, "data-testid": t
       <p
         className={cn(
           "text-sm text-muted-foreground whitespace-pre-wrap",
-          !expanded && needsExpansion && (clampLines === 2 ? "line-clamp-2" : clampLines === 3 ? "line-clamp-3" : "line-clamp-2")
+          !expanded &&
+            needsExpansion &&
+            (clampLines === 2
+              ? "line-clamp-2"
+              : clampLines === 3
+                ? "line-clamp-3"
+                : "line-clamp-2"),
         )}
       >
         {bio}
       </p>
+
       {needsExpansion && (
         <button
           type="button"
