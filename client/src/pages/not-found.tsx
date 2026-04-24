@@ -1,8 +1,7 @@
-```tsx
-import { Card, CardContent } from "../components/ui/card";
 import { AlertCircle } from "lucide-react";
-import { Button } from "../components/ui/button";
 import { Link } from "wouter";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
 
 export default function NotFound() {
   return (
@@ -30,4 +29,3 @@ export default function NotFound() {
     </div>
   );
 }
-```;
