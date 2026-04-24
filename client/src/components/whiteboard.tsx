@@ -6,7 +6,7 @@ import {
   Circle, Square, Minus, Type, Video, StopCircle, ImagePlus,
   MousePointer2, FileText, Move, Play, X, Send, ArrowLeft
 } from "lucide-react";
-import { cn } from "../../lib/utils";
+import { cn } from "@/lib/utils";
 import { Badge } from "../components/ui/badge";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
