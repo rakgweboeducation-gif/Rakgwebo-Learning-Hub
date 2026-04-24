@@ -1,18 +1,18 @@
 import { useRef, useState, useEffect, useCallback } from "react";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
+import { Button } from "../components/ui/button";
+import { Slider } from "../components/ui/slider";
 import {
   Pencil, Eraser, Trash2, Undo2, Redo2, Download, Share2,
   Circle, Square, Minus, Type, Video, StopCircle, ImagePlus,
   MousePointer2, FileText, Move, Play, X, Send, ArrowLeft
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
+import { cn } from "../lib/utils";
+import { Badge } from "../components/ui/badge";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
-} from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "../components/ui/dialog";
+import { ScrollArea } from "../components/ui/scroll-area";
+import { Checkbox } from "../components/ui/checkbox";
 import * as pdfjsLib from "pdfjs-dist";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(

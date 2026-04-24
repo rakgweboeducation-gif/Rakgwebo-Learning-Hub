@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useAuth } from "@/hooks/use-auth";
-import { useSessionWebSocket } from "@/hooks/use-session-ws";
+import { useAuth } from "../hooks/use-auth";
+import { useSessionWebSocket } from "../hooks/use-session-ws";
 import { useLocation } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Slider } from "@/components/ui/slider";
-import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
-import { apiRequest } from "@/lib/queryClient";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Card } from "../components/ui/card";
+import { Input } from "../components/ui/input";
+import { ScrollArea } from "../components/ui/scroll-area";
+import { Slider } from "../components/ui/slider";
+import { useToast } from "../hooks/use-toast";
+import { cn } from "../lib/utils";
+import { apiRequest } from "../lib/queryClient";
 import {
   Mic, MicOff, Video, VideoOff, PhoneOff, MessageSquare,
   Pencil, Eraser, Undo2, Redo2, Trash2, Circle, Square,
@@ -19,7 +19,7 @@ import {
   Upload, FileImage, Move, ZoomIn, ZoomOut, RotateCcw, MousePointer2
 } from "lucide-react";
 import * as pdfjsLib from "pdfjs-dist";
-import { apiUrl } from "@/lib/api-config";
+import { apiUrl } from "../lib/api-config";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",

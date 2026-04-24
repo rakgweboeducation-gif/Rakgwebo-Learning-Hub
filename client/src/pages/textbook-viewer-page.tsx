@@ -1,10 +1,10 @@
 import { useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { apiRequest, queryClient } from "@/lib/queryClient";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Textarea } from "@/components/ui/textarea";
+import { apiRequest, queryClient } from "../lib/queryClient";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { Textarea } from "../components/ui/textarea";
 import {
   ArrowLeft, Maximize2, Minimize2, HelpCircle, X, Send,
   ZoomIn, ZoomOut, ChevronLeft, ChevronRight,
@@ -12,13 +12,13 @@ import {
   Undo2, Redo2, MousePointer2, Mic
 } from "lucide-react";
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import { cn } from "@/lib/utils";
-import { VoiceRecorder } from "@/components/voice-recorder";
-import { useAuth } from "@/hooks/use-auth";
-import { useToast } from "@/hooks/use-toast";
+import { cn } from "../lib/utils";
+import { VoiceRecorder } from "../components/voice-recorder";
+import { useAuth } from "../hooks/use-auth";
+import { useToast } from "../hooks/use-toast";
 import * as pdfjsLib from "pdfjs-dist";
 import type { Textbook, Annotation, User } from "@shared/schema";
-import { apiUrl } from "@/lib/api-config";
+import { apiUrl } from "../lib/api-config";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "../lib/queryClient";
 import { 
   type Textbook, type InsertTextbook,
   type Annotation, type InsertAnnotation,
@@ -10,8 +10,8 @@ import {
   type QuizSession, type Announcement,
   type TutorAvailability
 } from "@shared/schema";
-import { useToast } from "@/hooks/use-toast";
-import { apiUrl } from "@/lib/api-config";
+import { useToast } from "../hooks/use-toast";
+import { apiUrl } from "../lib/api-config";
 
 // === TEXTBOOKS ===
 export function useTextbooks() {

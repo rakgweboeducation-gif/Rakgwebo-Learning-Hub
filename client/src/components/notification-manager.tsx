@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/hooks/use-auth";
-import { Button } from "@/components/ui/button";
+import { useAuth } from "../hooks/use-auth";
+import { Button } from "../components/ui/button";
 import { Bell, X } from "lucide-react";
 import {
   requestNotificationPermission,
@@ -10,7 +10,7 @@ import {
   sendNotificationForMessage,
   sendNotificationForAnnouncement,
   sendNotificationForSessionUpdate,
-} from "@/lib/push-notifications";
+} from "../lib/push-notifications";
 
 export function NotificationManager() {
   const { user } = useAuth();

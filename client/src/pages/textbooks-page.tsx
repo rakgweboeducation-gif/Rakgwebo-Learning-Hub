@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { useTextbooks } from "@/hooks/use-modules";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useTextbooks } from "../hooks/use-modules";
+import { Card, CardContent, CardFooter } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 import { BookOpen, Search, Filter } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "../components/ui/badge";
 
 export default function TextbooksPage() {
   const [, navigate] = useLocation();

@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "../components/ui/button";
 import { Mic, StopCircle, Trash2, Send } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "../components/ui/badge";
 
 interface VoiceRecorderProps {
   onSend: (blob: Blob) => void;

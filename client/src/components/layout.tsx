@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "../hooks/use-auth";
 import {
   LayoutDashboard,
   BookOpen,
@@ -18,10 +18,10 @@ import {
   Video,
 } from "lucide-react";
 import { useState } from "react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { cn } from "../lib/utils";
+import { Button } from "../components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { Sheet, SheetContent } from "../components/ui/sheet";
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const { user, logoutMutation } = useAuth();

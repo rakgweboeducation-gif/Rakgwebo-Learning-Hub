@@ -1,14 +1,14 @@
-import { useAuth } from "@/hooks/use-auth";
+import { useAuth } from "../hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Skeleton } from "../components/ui/skeleton";
 import { Loader2 } from "lucide-react";
-import { apiRequest, queryClient } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
+import { apiRequest, queryClient } from "../lib/queryClient";
+import { useToast } from "../hooks/use-toast";
 import { useState } from "react";
-import { apiUrl } from "@/lib/api-config";
+import { apiUrl } from "../lib/api-config";
 
 function formatZAR(cents: number): string {
   return "R" + (cents / 100).toFixed(2);

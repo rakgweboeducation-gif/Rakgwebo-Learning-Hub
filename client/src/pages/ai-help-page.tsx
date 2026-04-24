@@ -1,18 +1,18 @@
 import { useState, useRef, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "../components/ui/button";
+import { Textarea } from "../components/ui/textarea";
+import { Card, CardContent } from "../components/ui/card";
 import { BrainCircuit, Send, Sparkles, AlertCircle, ImagePlus, X, MessageSquarePlus, RotateCcw } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
+import { Skeleton } from "../components/ui/skeleton";
+import { Input } from "../components/ui/input";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
-import { MathGraph, parseGraphBlock } from "@/components/math-graph";
-import { apiUrl } from "@/lib/api-config";
+import { MathGraph, parseGraphBlock } from "../components/math-graph";
+import { apiUrl } from "../lib/api-config";
 
 function preprocessLatex(text: string): string {
   let result = text;

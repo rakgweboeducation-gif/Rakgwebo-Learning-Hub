@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Badge } from "../components/ui/badge";
+import { Button } from "../components/ui/button";
 import { Loader2, CheckCircle2, XCircle, Share2, BookOpen } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
+import { cn } from "../lib/utils";
+import { useToast } from "../hooks/use-toast";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
-import { apiUrl } from "@/lib/api-config";
+import { apiUrl } from "../lib/api-config";
 
 interface QuizQuestion {
   question: string;

@@ -1,17 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/hooks/use-auth";
-import { apiRequest } from "@/lib/queryClient";
-import { apiUrl } from "@/lib/api-config";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Slider } from "@/components/ui/slider";
-import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
+import { useAuth } from "../hooks/use-auth";
+import { apiRequest } from "../lib/queryClient";
+import { apiUrl } from "../lib/api-config";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Badge } from "../components/ui/badge";
+import { Avatar, AvatarFallback } from "../components/ui/avatar";
+import { ScrollArea } from "../components/ui/scroll-area";
+import { Slider } from "../components/ui/slider";
+import { useToast } from "../hooks/use-toast";
+import { cn } from "../lib/utils";
 import {
   Pen, Eraser, Minus, Square, Circle, Move, Undo2, Redo2, Trash2,
   ZoomIn, ZoomOut, RotateCcw, Send, Users, LogOut, Radio, ChevronRight, ChevronLeft,

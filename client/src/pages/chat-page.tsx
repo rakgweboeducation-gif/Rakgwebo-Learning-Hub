@@ -1,26 +1,26 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { queryClient, apiRequest } from "@/lib/queryClient";
-import { useAuth } from "@/hooks/use-auth";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
+import { queryClient, apiRequest } from "../lib/queryClient";
+import { useAuth } from "../hooks/use-auth";
+import { Card } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { ScrollArea } from "../components/ui/scroll-area";
+import { Badge } from "../components/ui/badge";
 import {
   MessageSquare, Send, Search, Plus, ArrowLeft,
   Pencil, X, Paperclip, PenLine, Smile, Mic, FileText
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Whiteboard } from "@/components/whiteboard";
-import { EmojiPicker } from "@/components/emoji-picker";
-import { VoiceRecorder } from "@/components/voice-recorder";
-import { playNotificationSound } from "@/lib/notification-sound";
-import { showNotification, updateAppBadge } from "@/lib/push-notifications";
+import { cn } from "../lib/utils";
+import { Whiteboard } from "../components/whiteboard";
+import { EmojiPicker } from "../components/emoji-picker";
+import { VoiceRecorder } from "../components/voice-recorder";
+import { playNotificationSound } from "../lib/notification-sound";
+import { showNotification, updateAppBadge } from "../lib/push-notifications";
 import type { User, ChatMessage } from "@shared/schema";
-import { apiUrl } from "@/lib/api-config";
-import { TappableAvatar } from "@/components/profile-viewer";
+import { apiUrl } from "../lib/api-config";
+import { TappableAvatar } from "../components/profile-viewer";
 
 type ChatSessionWithMeta = {
   id: number;

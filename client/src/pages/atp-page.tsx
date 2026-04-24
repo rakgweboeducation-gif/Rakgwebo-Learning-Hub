@@ -1,20 +1,20 @@
 import { useState, useEffect } from "react";
-import { useATPTopics, useATPSubjects, useGenerateQuiz, useSubmitQuiz } from "@/hooks/use-modules";
-import { useAuth } from "@/hooks/use-auth";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { useATPTopics, useATPSubjects, useGenerateQuiz, useSubmitQuiz } from "../hooks/use-modules";
+import { useAuth } from "../hooks/use-auth";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
 import { ChevronRight, BookOpen, GraduationCap, Loader2, ClipboardCopy, RotateCcw, CheckCircle2, XCircle, Sparkles } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { cn } from "../lib/utils";
+import { ScrollArea } from "../components/ui/scroll-area";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
+import { useToast } from "../hooks/use-toast";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import type { QuizSession } from "@shared/schema";
-import { apiUrl } from "@/lib/api-config";
+import { apiUrl } from "../lib/api-config";
 
 interface QuizQuestion {
   question: string;

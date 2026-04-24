@@ -1,10 +1,10 @@
-import { useAuth } from "@/hooks/use-auth";
-import { useHelpRequests, useUpdateHelpRequest } from "@/hooks/use-modules";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { useAuth } from "../hooks/use-auth";
+import { useHelpRequests, useUpdateHelpRequest } from "../hooks/use-modules";
+import { Card, CardContent } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
 import { HelpCircle, CheckCircle2, Loader2 } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "../components/ui/skeleton";
 
 export default function HelpRequestsPage() {
   const { user } = useAuth();

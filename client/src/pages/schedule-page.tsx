@@ -1,19 +1,19 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/use-auth";
-import { useTutorSessions, useUpdateTutorSession, useTutorAvailability, useSetTutorAvailability } from "@/hooks/use-modules";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useAuth } from "../hooks/use-auth";
+import { useTutorSessions, useUpdateTutorSession, useTutorAvailability, useSetTutorAvailability } from "../hooks/use-modules";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
 import { Calendar, Clock, CheckCircle2, XCircle, Loader2, ExternalLink, Video, Plus, Trash2, Save, Mic, Play, Download } from "lucide-react";
 import { useLocation } from "wouter";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
+import { Skeleton } from "../components/ui/skeleton";
+import { Separator } from "../components/ui/separator";
+import { cn } from "../lib/utils";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
-import { useToast } from "@/hooks/use-toast";
+import { apiRequest } from "../lib/queryClient";
+import { useToast } from "../hooks/use-toast";
 
 const statusColors: Record<string, string> = {
   requested: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",

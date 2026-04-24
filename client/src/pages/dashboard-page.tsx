@@ -1,11 +1,11 @@
-import { useAuth } from "@/hooks/use-auth";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { useAuth } from "../hooks/use-auth";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import { Badge } from "../components/ui/badge";
 import { BookOpen, GraduationCap, Users, BrainCircuit, MessageSquare, Calendar, ArrowRight, Megaphone } from "lucide-react";
 import { Link } from "wouter";
 import { useQuery } from "@tanstack/react-query";
-import { useAnnouncements } from "@/hooks/use-modules";
+import { useAnnouncements } from "../hooks/use-modules";
 import type { Announcement } from "@shared/schema";
 
 export default function DashboardPage() {

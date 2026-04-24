@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "../lib/queryClient";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 import {
   Form,
   FormControl,
@@ -13,17 +13,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from "../components/ui/form";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "../components/ui/card";
 import { ArrowLeft, Mail, CheckCircle2, Loader2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { apiUrl } from "@/lib/api-config";
+import { useToast } from "../hooks/use-toast";
+import { apiUrl } from "../lib/api-config";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
