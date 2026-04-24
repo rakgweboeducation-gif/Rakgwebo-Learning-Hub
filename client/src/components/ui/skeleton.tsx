@@ -1,4 +1,4 @@
-import { cn } from "../../../lib/utils"; // ✅ fixed path
+import { cn } from "../../lib/utils";
 
 function Skeleton({
   className,
