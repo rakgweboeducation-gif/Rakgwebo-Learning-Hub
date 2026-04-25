@@ -13,6 +13,9 @@ declare module "http" {
   }
 }
 
+// ==========================
+// BODY PARSING
+// ==========================
 app.use(
   express.json({
     verify: (req, _res, buf) => {
@@ -23,7 +26,9 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
-// Disable caching for API + HTML
+// ==========================
+// CACHE CONTROL
+// ==========================
 app.use((req, res, next) => {
   if (req.path.startsWith("/api")) {
     res.set(
@@ -51,7 +56,10 @@ app.use((req, res, next) => {
   next();
 });
 
-export function log(message: string, source = "express") {
+// ==========================
+// LOGGER
+// ==========================
+export function log(message: string, source = "app") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
     hour: "numeric",
     minute: "2-digit",
@@ -62,7 +70,9 @@ export function log(message: string, source = "express") {
   console.log(`${formattedTime} [${source}] ${message}`);
 }
 
-// Request logger
+// ==========================
+// REQUEST LOGGER
+// ==========================
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -84,31 +94,44 @@ app.use((req, res, next) => {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
 
-      log(logLine);
+      log(logLine, "api");
     }
   });
 
   next();
 });
 
+// ==========================
+// STARTUP
+// ==========================
 (async () => {
-  // 🔥 FIX: DO NOT crash if seed fails
+  log("Starting server...", "startup");
+
+  // 🔥 SAFE SEED (won’t crash app)
   try {
     await seedDatabase();
     log("Database seeded successfully", "startup");
   } catch (err: any) {
-    console.error("Seed failed (likely missing tables):", err.message);
-    log("Skipping seed — database not ready yet", "startup");
+    console.error("❌ Seed failed:", err);
+    log("Skipping seed (non-critical)", "startup");
   }
 
-  await registerRoutes(httpServer, app);
+  // 🔥 SAFE ROUTES (won’t crash app)
+  try {
+    await registerRoutes(httpServer, app);
+    log("Routes registered successfully", "startup");
+  } catch (err: any) {
+    console.error("❌ ROUTES FAILED:", err);
+  }
 
-  // Error handler
+  // ==========================
+  // ERROR HANDLER
+  // ==========================
   app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
     const status = err.status || err.statusCode || 500;
     const message = err.message || "Internal Server Error";
 
-    console.error("Internal Server Error:", err);
+    console.error("❌ Internal Server Error:", err);
 
     if (res.headersSent) {
       return next(err);
@@ -117,15 +140,25 @@ app.use((req, res, next) => {
     return res.status(status).json({ message });
   });
 
-  // Static / Vite
-  if (process.env.NODE_ENV === "production") {
-    serveStatic(app);
-  } else {
-    const { setupVite } = await import("./vite");
-    await setupVite(httpServer, app);
+  // ==========================
+  // STATIC / DEV
+  // ==========================
+  try {
+    if (process.env.NODE_ENV === "production") {
+      log("Serving static files...", "startup");
+      serveStatic(app);
+    } else {
+      const { setupVite } = await import("./vite");
+      await setupVite(httpServer, app);
+      log("Vite dev server started", "startup");
+    }
+  } catch (err) {
+    console.error("❌ STATIC/VITE FAILED:", err);
   }
 
-  // 🔥 Important: Render requires PORT
+  // ==========================
+  // START SERVER
+  // ==========================
   const port = parseInt(process.env.PORT || "5000", 10);
 
   httpServer.listen(
@@ -135,7 +168,7 @@ app.use((req, res, next) => {
       reusePort: true,
     },
     () => {
-      log(`Server running on port ${port}`, "startup");
+      log(`🚀 Server running on port ${port}`, "startup");
     },
   );
 })();
