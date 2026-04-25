@@ -1,13 +1,16 @@
 import path from "path";
+import { fileURLToPath } from "url";
 import express, { type Express } from "express";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 export function serveStatic(app: Express) {
-  // Correct path to Vite build output
-  const distPath = path.join(process.cwd(), "client", "dist");
+  // Go up to project root, then into dist
+  const distPath = path.resolve(__dirname, "../dist");
 
   app.use(express.static(distPath));
 
-  // SPA fallback (React routing)
   app.get("*", (_req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
