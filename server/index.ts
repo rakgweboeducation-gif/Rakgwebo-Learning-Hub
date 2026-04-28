@@ -4,7 +4,9 @@ import { serveStatic } from "./static";
 import { createServer } from "http";
 import { seedDatabase } from "./seed";
 
-// 🔥 GLOBAL CRASH HANDLERS (CRITICAL)
+// ==========================
+// 🔥 GLOBAL CRASH HANDLERS
+// ==========================
 process.on("uncaughtException", (err) => {
   console.error("💥 UNCAUGHT EXCEPTION:", err);
 });
@@ -13,9 +15,11 @@ process.on("unhandledRejection", (err) => {
   console.error("💥 UNHANDLED REJECTION:", err);
 });
 
+// ==========================
 const app = express();
 const httpServer = createServer(app);
 
+// Extend request type
 declare module "http" {
   interface IncomingMessage {
     rawBody: unknown;
@@ -85,12 +89,13 @@ export function log(message: string, source = "app") {
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
-  let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
-  const originalResJson = res.json;
-  res.json = function (bodyJson, ...args) {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
+  let capturedJsonResponse: Record<string, any> | undefined;
+
+  const originalJson = res.json;
+  res.json = function (body: any, ...args: any[]) {
+    capturedJsonResponse = body;
+    return originalJson.apply(res, [body, ...args]);
   };
 
   res.on("finish", () => {
@@ -113,65 +118,78 @@ app.use((req, res, next) => {
 // ==========================
 // STARTUP
 // ==========================
-(async () => {
+async function startServer() {
+  log("🚀 Starting server...", "startup");
+
+  // --------------------------
+  // DB SEED (SAFE)
+  // --------------------------
   try {
-    log("Starting server...", "startup");
+    await seedDatabase();
+    log("✅ Database seeded", "startup");
+  } catch (err: any) {
+    console.error("⚠️ Seed failed:", err?.message);
+    log("Skipping seed (non-critical)", "startup");
+  }
 
-    // SAFE SEED
-    try {
-      await seedDatabase();
-      log("Database seeded successfully", "startup");
-    } catch (err: any) {
-      console.error("❌ Seed failed:", err);
-      log("Skipping seed (non-critical)", "startup");
-    }
+  // --------------------------
+  // ROUTES (SAFE)
+  // --------------------------
+  try {
+    await registerRoutes(httpServer, app);
+    log("✅ Routes registered", "startup");
+  } catch (err: any) {
+    console.error("💥 ROUTES FAILED:", err);
+  }
 
-    // SAFE ROUTES
-    try {
-      await registerRoutes(httpServer, app);
-      log("Routes registered successfully", "startup");
-    } catch (err: any) {
-      console.error("❌ ROUTES FAILED:", err);
-    }
+  // --------------------------
+  // ERROR HANDLER
+  // --------------------------
+  app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
+    const status = err.status || err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
 
-    // ERROR HANDLER
-    app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
-      const status = err.status || err.statusCode || 500;
-      const message = err.message || "Internal Server Error";
+    console.error("❌ Express Error:", err);
 
-      console.error("❌ Internal Server Error:", err);
+    if (res.headersSent) return next(err);
 
-      if (res.headersSent) {
-        return next(err);
-      }
+    res.status(status).json({ message });
+  });
 
-      return res.status(status).json({ message });
-    });
-
-    // STATIC / DEV
+  // --------------------------
+  // STATIC / DEV (SAFE)
+  // --------------------------
+  try {
     if (process.env.NODE_ENV === "production") {
-      log("Serving static files...", "startup");
+      log("📦 Serving static files...", "startup");
       serveStatic(app);
     } else {
       const { setupVite } = await import("./vite");
       await setupVite(httpServer, app);
-      log("Vite dev server started", "startup");
+      log("⚡ Vite dev server ready", "startup");
     }
-
-    // START SERVER
-    const port = parseInt(process.env.PORT || "5000", 10);
-
-    httpServer.listen(
-      {
-        port,
-        host: "0.0.0.0",
-        reusePort: true,
-      },
-      () => {
-        log(`🚀 Server running on port ${port}`, "startup");
-      },
-    );
   } catch (err) {
-    console.error("💥 STARTUP FAILED:", err);
+    console.error("💥 STATIC/VITE FAILED:", err);
   }
-})();
+
+  // --------------------------
+  // START LISTENING
+  // --------------------------
+  const port = parseInt(process.env.PORT || "5000", 10);
+
+  httpServer.listen(
+    {
+      port,
+      host: "0.0.0.0",
+      reusePort: true,
+    },
+    () => {
+      log(`🚀 Server running on port ${port}`, "startup");
+    },
+  );
+}
+
+// 🔥 RUN SERVER
+startServer().catch((err) => {
+  console.error("💥 STARTUP FAILED:", err);
+});
