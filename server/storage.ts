@@ -21,6 +21,9 @@ import connectPg from "connect-pg-simple";
 
 const PostgresSessionStore = connectPg(session);
 
+// ==========================
+// INTERFACE
+// ==========================
 export interface IStorage {
   sessionStore: session.Store;
 
@@ -28,8 +31,14 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
+
+  // OPTIONAL (used in routes safely)
+  logActivity?: (data: any) => Promise<void>;
 }
 
+// ==========================
+// CLASS
+// ==========================
 export class DatabaseStorage implements IStorage {
   sessionStore: session.Store;
 
@@ -38,6 +47,8 @@ export class DatabaseStorage implements IStorage {
       pool,
       createTableIfMissing: true,
     });
+
+    console.log("📦 Session store initialized");
   }
 
   // =========================
@@ -45,22 +56,49 @@ export class DatabaseStorage implements IStorage {
   // =========================
 
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+    try {
+      const [user] = await db.select().from(users).where(eq(users.id, id));
+      return user;
+    } catch (err) {
+      console.error("❌ getUser failed:", err);
+      return undefined;
+    }
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    const [user] = await db
-      .select()
-      .from(users)
-      .where(eq(users.username, username));
-    return user;
+    try {
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.username, username));
+      return user;
+    } catch (err) {
+      console.error("❌ getUserByUsername failed:", err);
+      return undefined;
+    }
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values(insertUser).returning();
-    return user;
+    try {
+      const [user] = await db.insert(users).values(insertUser).returning();
+      return user;
+    } catch (err) {
+      console.error("❌ createUser failed:", err);
+      throw err;
+    }
+  }
+
+  // =========================
+  // SAFE ACTIVITY LOGGER
+  // =========================
+  async logActivity(_data: any): Promise<void> {
+    // 🔥 No-op for now (prevents crashes)
+    // You can implement later when activity_logs table exists
+    return;
   }
 }
 
+// ==========================
+// EXPORT
+// ==========================
 export const storage = new DatabaseStorage();
