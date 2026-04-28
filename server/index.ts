@@ -4,6 +4,15 @@ import { serveStatic } from "./static";
 import { createServer } from "http";
 import { seedDatabase } from "./seed";
 
+// 🔥 GLOBAL CRASH HANDLERS (CRITICAL)
+process.on("uncaughtException", (err) => {
+  console.error("💥 UNCAUGHT EXCEPTION:", err);
+});
+
+process.on("unhandledRejection", (err) => {
+  console.error("💥 UNHANDLED REJECTION:", err);
+});
+
 const app = express();
 const httpServer = createServer(app);
 
@@ -105,45 +114,41 @@ app.use((req, res, next) => {
 // STARTUP
 // ==========================
 (async () => {
-  log("Starting server...", "startup");
-
-  // 🔥 SAFE SEED (won’t crash app)
   try {
-    await seedDatabase();
-    log("Database seeded successfully", "startup");
-  } catch (err: any) {
-    console.error("❌ Seed failed:", err);
-    log("Skipping seed (non-critical)", "startup");
-  }
+    log("Starting server...", "startup");
 
-  // 🔥 SAFE ROUTES (won’t crash app)
-  try {
-    await registerRoutes(httpServer, app);
-    log("Routes registered successfully", "startup");
-  } catch (err: any) {
-    console.error("❌ ROUTES FAILED:", err);
-  }
-
-  // ==========================
-  // ERROR HANDLER
-  // ==========================
-  app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    console.error("❌ Internal Server Error:", err);
-
-    if (res.headersSent) {
-      return next(err);
+    // SAFE SEED
+    try {
+      await seedDatabase();
+      log("Database seeded successfully", "startup");
+    } catch (err: any) {
+      console.error("❌ Seed failed:", err);
+      log("Skipping seed (non-critical)", "startup");
     }
 
-    return res.status(status).json({ message });
-  });
+    // SAFE ROUTES
+    try {
+      await registerRoutes(httpServer, app);
+      log("Routes registered successfully", "startup");
+    } catch (err: any) {
+      console.error("❌ ROUTES FAILED:", err);
+    }
 
-  // ==========================
-  // STATIC / DEV
-  // ==========================
-  try {
+    // ERROR HANDLER
+    app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
+      const status = err.status || err.statusCode || 500;
+      const message = err.message || "Internal Server Error";
+
+      console.error("❌ Internal Server Error:", err);
+
+      if (res.headersSent) {
+        return next(err);
+      }
+
+      return res.status(status).json({ message });
+    });
+
+    // STATIC / DEV
     if (process.env.NODE_ENV === "production") {
       log("Serving static files...", "startup");
       serveStatic(app);
@@ -152,23 +157,21 @@ app.use((req, res, next) => {
       await setupVite(httpServer, app);
       log("Vite dev server started", "startup");
     }
+
+    // START SERVER
+    const port = parseInt(process.env.PORT || "5000", 10);
+
+    httpServer.listen(
+      {
+        port,
+        host: "0.0.0.0",
+        reusePort: true,
+      },
+      () => {
+        log(`🚀 Server running on port ${port}`, "startup");
+      },
+    );
   } catch (err) {
-    console.error("❌ STATIC/VITE FAILED:", err);
+    console.error("💥 STARTUP FAILED:", err);
   }
-
-  // ==========================
-  // START SERVER
-  // ==========================
-  const port = parseInt(process.env.PORT || "5000", 10);
-
-  httpServer.listen(
-    {
-      port,
-      host: "0.0.0.0",
-      reusePort: true,
-    },
-    () => {
-      log(`🚀 Server running on port ${port}`, "startup");
-    },
-  );
 })();
