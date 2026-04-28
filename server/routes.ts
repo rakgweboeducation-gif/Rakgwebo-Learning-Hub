@@ -2,14 +2,13 @@ import express, { type Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
-import { api } from "@shared/routes";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
 import { setupSessionWebSocket } from "./session-ws";
 import { setupClassWebSocket } from "./class-ws";
 
-// ✅ FIX: single clean import (NO duplicates)
+// ✅ ONLY schema imports (safe)
 import {
   insertTextbookSchema,
   insertAnnotationSchema,
@@ -25,32 +24,6 @@ function stripPassword(user: any) {
   if (!user) return user;
   const { password, ...safe } = user;
   return safe;
-}
-
-function stripPasswordsFromList(users: any[]) {
-  return users.map(stripPassword);
-}
-
-// ✅ SAFE logActivity (won’t crash if not implemented)
-function logActivity(req: any, action: string, details?: string) {
-  try {
-    const user = req.user;
-
-    if (!storage || typeof (storage as any).logActivity !== "function") return;
-
-    (storage as any)
-      .logActivity({
-        userId: user?.id || null,
-        userName: user?.username || user?.name || null,
-        userRole: user?.role || null,
-        action,
-        details: details || null,
-        ipAddress: req.ip || req.headers["x-forwarded-for"]?.toString() || null,
-      })
-      .catch(() => {});
-  } catch (err) {
-    console.error("logActivity failed:", err);
-  }
 }
 
 // ==========================
@@ -79,7 +52,6 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express,
 ): Promise<Server> {
-  // AUTH
   setupAuth(app);
 
   // WEBSOCKETS
@@ -106,16 +78,12 @@ export async function registerRoutes(
     console.error("⚠️ WebSocket setup failed:", err);
   }
 
-  // ==========================
-  // BASIC HEALTH CHECK (VERY IMPORTANT)
-  // ==========================
+  // HEALTH CHECK
   app.get("/api/health", (_req, res) => {
     res.json({ status: "ok" });
   });
 
-  // ==========================
-  // USERS (SAFE EXAMPLE ROUTE)
-  // ==========================
+  // USER
   app.get("/api/users/me", async (req: any, res) => {
     if (!req.isAuthenticated?.()) {
       return res.status(401).json({ error: "Unauthorized" });
@@ -125,9 +93,7 @@ export async function registerRoutes(
     res.json(stripPassword(user));
   });
 
-  // ==========================
-  // FILE UPLOAD TEST
-  // ==========================
+  // FILE UPLOAD
   app.post("/api/upload", upload.single("file"), (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
@@ -138,13 +104,8 @@ export async function registerRoutes(
     });
   });
 
-  // ==========================
-  // STATIC UPLOADS
-  // ==========================
+  // STATIC FILES
   app.use("/uploads", express.static(uploadDir));
 
-  // ==========================
-  // FINAL RETURN
-  // ==========================
   return httpServer;
 }
