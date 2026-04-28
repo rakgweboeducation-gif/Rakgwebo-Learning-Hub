@@ -116,20 +116,20 @@ app.use((req, res, next) => {
 });
 
 // ==========================
-// STARTUP
+// START SERVER FUNCTION
 // ==========================
 async function startServer() {
   log("🚀 Starting server...", "startup");
 
   // --------------------------
-  // DB SEED (SAFE)
+  // DATABASE SEED (SAFE)
   // --------------------------
   try {
     await seedDatabase();
     log("✅ Database seeded", "startup");
   } catch (err: any) {
-    console.error("⚠️ Seed failed:", err?.message);
-    log("Skipping seed (non-critical)", "startup");
+    console.error("💥 SEED CRASH:", err);
+    log("Skipping seed (database not ready)", "startup");
   }
 
   // --------------------------
@@ -157,7 +157,7 @@ async function startServer() {
   });
 
   // --------------------------
-  // STATIC / DEV (SAFE)
+  // STATIC / DEV
   // --------------------------
   try {
     if (process.env.NODE_ENV === "production") {
@@ -189,7 +189,9 @@ async function startServer() {
   );
 }
 
-// 🔥 RUN SERVER
+// ==========================
+// RUN SERVER
+// ==========================
 startServer().catch((err) => {
   console.error("💥 STARTUP FAILED:", err);
 });
