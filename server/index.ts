@@ -5,14 +5,17 @@ import { createServer } from "http";
 import { seedDatabase } from "./seed";
 
 // ==========================
-// 🔥 GLOBAL CRASH HANDLERS
+// 🔥 GLOBAL CRASH HANDLERS (VERY IMPORTANT)
 // ==========================
 process.on("uncaughtException", (err) => {
-  console.error("💥 UNCAUGHT EXCEPTION:", err);
+  console.error("💥 UNCAUGHT EXCEPTION:");
+  console.error(err);
+  console.error(err?.stack);
 });
 
 process.on("unhandledRejection", (err) => {
-  console.error("💥 UNHANDLED REJECTION:", err);
+  console.error("💥 UNHANDLED REJECTION:");
+  console.error(err);
 });
 
 // ==========================
@@ -122,24 +125,27 @@ async function startServer() {
   log("🚀 Starting server...", "startup");
 
   // --------------------------
-  // DATABASE SEED (SAFE)
+  // DATABASE SEED (FORCE LOGGING)
   // --------------------------
   try {
+    console.log("🟡 Starting database seed...");
     await seedDatabase();
-    log("✅ Database seeded", "startup");
+    console.log("🟢 Database seed complete");
   } catch (err: any) {
-    console.error("💥 SEED CRASH:", err);
-    log("Skipping seed (database not ready)", "startup");
+    console.error("💥 SEED CRASH FULL ERROR:");
+    console.error(err);
+    console.error(err?.stack);
   }
 
   // --------------------------
-  // ROUTES (SAFE)
+  // ROUTES
   // --------------------------
   try {
     await registerRoutes(httpServer, app);
     log("✅ Routes registered", "startup");
   } catch (err: any) {
-    console.error("💥 ROUTES FAILED:", err);
+    console.error("💥 ROUTES FAILED:");
+    console.error(err);
   }
 
   // --------------------------
@@ -169,7 +175,8 @@ async function startServer() {
       log("⚡ Vite dev server ready", "startup");
     }
   } catch (err) {
-    console.error("💥 STATIC/VITE FAILED:", err);
+    console.error("💥 STATIC/VITE FAILED:");
+    console.error(err);
   }
 
   // --------------------------
@@ -193,5 +200,6 @@ async function startServer() {
 // RUN SERVER
 // ==========================
 startServer().catch((err) => {
-  console.error("💥 STARTUP FAILED:", err);
+  console.error("💥 STARTUP FAILED:");
+  console.error(err);
 });
