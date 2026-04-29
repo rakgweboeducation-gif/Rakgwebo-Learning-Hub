@@ -1,10 +1,10 @@
-import express, { type Request, Response, NextFunction } from "express";
+import express from "express";
+import { createServer } from "http";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
-import { createServer } from "http";
 import { seedDatabase } from "./seed";
 
-// 🔥 CRASH HANDLERS (VERY IMPORTANT)
+// 🔥 Crash handlers (so nothing is silent anymore)
 process.on("uncaughtException", (err) => {
   console.error("💥 UNCAUGHT EXCEPTION:", err);
 });
@@ -14,62 +14,46 @@ process.on("unhandledRejection", (err) => {
 });
 
 const app = express();
-const httpServer = createServer(app);
+const server = createServer(app);
 
-// BODY PARSING
+// Basic middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 
-// SIMPLE LOGGER
-app.use((req, _res, next) => {
-  console.log(`${req.method} ${req.url}`);
-  next();
+// 🔥 START SERVER IMMEDIATELY (CRITICAL)
+const PORT = parseInt(process.env.PORT || "10000", 10);
+
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
 
-// ==========================
-// START SERVER FIRST (CRITICAL FIX)
-// ==========================
-const port = parseInt(process.env.PORT || "10000", 10);
-
-httpServer.listen(port, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${port}`);
-});
-
-// ==========================
-// INIT APP AFTER START
-// ==========================
+// 🔥 Run everything AFTER server starts
 (async () => {
   try {
-    console.log("Starting app setup...");
+    console.log("Starting setup...");
 
-    // Seed (non-blocking)
+    // Database seed (safe)
     try {
       await seedDatabase();
-      console.log("Database seeded");
+      console.log("✅ Database ready");
     } catch (err) {
-      console.error("Seed skipped:", err);
+      console.error("⚠️ Seed skipped:", err);
     }
 
     // Routes
     try {
-      await registerRoutes(httpServer, app);
-      console.log("Routes registered");
+      await registerRoutes(server, app);
+      console.log("✅ Routes loaded");
     } catch (err) {
-      console.error("Routes failed:", err);
+      console.error("❌ Routes failed:", err);
     }
 
-    // Static
+    // Static files
     if (process.env.NODE_ENV === "production") {
       serveStatic(app);
+      console.log("✅ Static serving enabled");
     }
   } catch (err) {
-    console.error("Startup error:", err);
+    console.error("💥 Startup failure:", err);
   }
 })();
-
-// ERROR HANDLER
-app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
-  console.error("Error:", err);
-  if (res.headersSent) return next(err);
-  res.status(500).json({ message: "Internal Server Error" });
-});
