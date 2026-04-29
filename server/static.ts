@@ -1,24 +1,20 @@
+import express from "express";
 import path from "path";
-import express, { type Express } from "express";
-import fs from "fs";
+import { fileURLToPath } from "url";
 
-export function serveStatic(app: Express) {
-  // ✅ Correct path based on your Vite build output
-  const distPath = path.resolve(process.cwd(), "dist", "public");
+export function serveStatic(app: express.Express) {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
 
-  console.log("📦 Serving static files from:", distPath);
+  const distPath = path.join(__dirname, "../dist/public");
 
-  // 🔥 Prevent silent crash if folder missing
-  if (!fs.existsSync(distPath)) {
-    console.error("❌ Static build folder NOT FOUND:", distPath);
-    throw new Error("Missing dist/public. Did the build run?");
-  }
+  console.log("📦 Serving static from:", distPath);
 
   // Serve static assets
   app.use(express.static(distPath));
 
-  // SPA fallback (React router, etc.)
-  app.get("*", (_req, res) => {
+  // Catch-all → return index.html (THIS FIXES YOUR ISSUE)
+  app.get("*", (req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
 }
