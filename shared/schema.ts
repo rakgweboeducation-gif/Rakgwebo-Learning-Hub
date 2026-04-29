@@ -66,6 +66,29 @@ export const insertTextbookSchema = createInsertSchema(textbooks).omit({
 });
 
 // ==========================
+// ATP TOPICS (🔥 THIS WAS MISSING)
+// ==========================
+export const atp_topics = pgTable("atp_topics", {
+  id: serial("id").primaryKey(),
+
+  grade: integer("grade").notNull(),
+  term: integer("term").notNull(),
+  week: integer("week").notNull(),
+
+  topic: text("topic").notNull(),
+  content: text("content"),
+
+  subject: text("subject").default("Mathematics"),
+
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertAtpTopicSchema = createInsertSchema(atp_topics).omit({
+  id: true,
+  createdAt: true,
+});
+
+// ==========================
 // ANNOTATIONS
 // ==========================
 export const annotations = pgTable("annotations", {
@@ -177,6 +200,9 @@ export type InsertAnnotation = z.infer<typeof insertAnnotationSchema>;
 
 export type HelpRequest = typeof helpRequests.$inferSelect;
 export type InsertHelpRequest = z.infer<typeof insertHelpRequestSchema>;
+
+export type AtpTopic = typeof atp_topics.$inferSelect;
+export type InsertAtpTopic = z.infer<typeof insertAtpTopicSchema>;
 
 export type ChatSession = typeof chatSessions.$inferSelect;
 export type ChatMessage = typeof chatMessages.$inferSelect;
