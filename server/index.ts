@@ -22,11 +22,17 @@ app.use(express.urlencoded({ extended: true }));
 
 const PORT = parseInt(process.env.PORT || "10000", 10);
 
+// 🔥 START SERVER IMMEDIATELY (IMPORTANT for Render)
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
+// 🔥 Run setup AFTER server starts
 (async () => {
   try {
     console.log("🚀 Starting server setup...");
 
-    // ✅ Seed DB
+    // ✅ Seed DB (non-blocking)
     try {
       await seedDatabase();
       console.log("✅ Database ready");
@@ -34,7 +40,7 @@ const PORT = parseInt(process.env.PORT || "10000", 10);
       console.error("⚠️ Seed skipped:", err);
     }
 
-    // ✅ Register routes FIRST
+    // ✅ Register routes
     try {
       await registerRoutes(server, app);
       console.log("✅ Routes loaded");
@@ -42,16 +48,13 @@ const PORT = parseInt(process.env.PORT || "10000", 10);
       console.error("❌ Routes failed:", err);
     }
 
-    // ✅ Serve frontend (THIS FIXES "Not Found")
-    if (process.env.NODE_ENV === "production") {
+    // ✅ Serve frontend LAST (CRITICAL)
+    try {
       serveStatic(app);
       console.log("✅ Static serving enabled");
+    } catch (err) {
+      console.error("❌ Static failed:", err);
     }
-
-    // ✅ START SERVER LAST
-    server.listen(PORT, "0.0.0.0", () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-    });
   } catch (err) {
     console.error("💥 Startup failure:", err);
   }

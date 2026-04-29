@@ -2,15 +2,15 @@ import express from "express";
 import path from "path";
 
 export function serveStatic(app: express.Express) {
-  // ✅ Correct Vite build output
-  const distPath = path.resolve(process.cwd(), "dist");
+  // 🔥 FIX: correct Vite output folder
+  const distPath = path.resolve(process.cwd(), "dist/public");
 
   console.log("📦 Serving static from:", distPath);
 
-  // Serve static files
+  // Serve static assets
   app.use(express.static(distPath));
 
-  // ✅ Express 5 safe fallback (NO "*", NO "/*")
+  // SPA fallback (React router)
   app.use((req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
