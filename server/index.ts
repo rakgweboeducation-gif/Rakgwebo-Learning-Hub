@@ -4,7 +4,7 @@ import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { seedDatabase } from "./seed";
 
-// 🔥 Crash handlers (so nothing is silent anymore)
+// 🔥 Crash handlers
 process.on("uncaughtException", (err) => {
   console.error("💥 UNCAUGHT EXCEPTION:", err);
 });
@@ -16,23 +16,17 @@ process.on("unhandledRejection", (err) => {
 const app = express();
 const server = createServer(app);
 
-// Basic middleware
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 🔥 START SERVER IMMEDIATELY (CRITICAL)
 const PORT = parseInt(process.env.PORT || "10000", 10);
 
-server.listen(PORT, "0.0.0.0", () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
-
-// 🔥 Run everything AFTER server starts
 (async () => {
   try {
-    console.log("Starting setup...");
+    console.log("🚀 Starting server setup...");
 
-    // Database seed (safe)
+    // ✅ Seed DB
     try {
       await seedDatabase();
       console.log("✅ Database ready");
@@ -40,7 +34,7 @@ server.listen(PORT, "0.0.0.0", () => {
       console.error("⚠️ Seed skipped:", err);
     }
 
-    // Routes
+    // ✅ Register routes FIRST
     try {
       await registerRoutes(server, app);
       console.log("✅ Routes loaded");
@@ -48,11 +42,16 @@ server.listen(PORT, "0.0.0.0", () => {
       console.error("❌ Routes failed:", err);
     }
 
-    // Static files
+    // ✅ Serve frontend (THIS FIXES "Not Found")
     if (process.env.NODE_ENV === "production") {
       serveStatic(app);
       console.log("✅ Static serving enabled");
     }
+
+    // ✅ START SERVER LAST
+    server.listen(PORT, "0.0.0.0", () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
   } catch (err) {
     console.error("💥 Startup failure:", err);
   }
