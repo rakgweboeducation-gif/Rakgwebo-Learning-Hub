@@ -6,11 +6,11 @@ export function serveStatic(app: express.Express) {
 
   console.log("📦 Serving static from:", distPath);
 
-  // Serve static files
+  // Serve static assets
   app.use(express.static(distPath));
 
-  // FIXED: Express 5 wildcard route
-  app.get("/*", (_req, res) => {
+  // ✅ Express 5 SAFE fallback (NO "*", NO "/*")
+  app.use((req, res) => {
     res.sendFile(path.join(distPath, "index.html"));
   });
 }
