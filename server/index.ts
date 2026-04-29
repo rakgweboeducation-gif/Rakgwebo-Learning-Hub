@@ -4,202 +4,72 @@ import { serveStatic } from "./static";
 import { createServer } from "http";
 import { seedDatabase } from "./seed";
 
-// ==========================
-// 🔥 GLOBAL CRASH HANDLERS (VERY IMPORTANT)
-// ==========================
+// 🔥 CRASH HANDLERS (VERY IMPORTANT)
 process.on("uncaughtException", (err) => {
-  console.error("💥 UNCAUGHT EXCEPTION:");
-  console.error(err);
-  console.error(err?.stack);
+  console.error("💥 UNCAUGHT EXCEPTION:", err);
 });
 
 process.on("unhandledRejection", (err) => {
-  console.error("💥 UNHANDLED REJECTION:");
-  console.error(err);
+  console.error("💥 UNHANDLED REJECTION:", err);
 });
 
-// ==========================
 const app = express();
 const httpServer = createServer(app);
 
-// Extend request type
-declare module "http" {
-  interface IncomingMessage {
-    rawBody: unknown;
-  }
-}
-
-// ==========================
 // BODY PARSING
-// ==========================
-app.use(
-  express.json({
-    verify: (req, _res, buf) => {
-      req.rawBody = buf;
-    },
-  }),
-);
-
+app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// ==========================
-// CACHE CONTROL
-// ==========================
-app.use((req, res, next) => {
-  if (req.path.startsWith("/api")) {
-    res.set(
-      "Cache-Control",
-      "no-store, no-cache, must-revalidate, proxy-revalidate",
-    );
-    res.set("Pragma", "no-cache");
-    res.set("Expires", "0");
-  }
-
-  if (
-    req.path.endsWith(".html") ||
-    req.path === "/" ||
-    !req.path.includes(".")
-  ) {
-    res.set(
-      "Cache-Control",
-      "no-store, no-cache, must-revalidate, proxy-revalidate",
-    );
-    res.set("Pragma", "no-cache");
-    res.set("Expires", "0");
-    res.set("Surrogate-Control", "no-store");
-  }
-
+// SIMPLE LOGGER
+app.use((req, _res, next) => {
+  console.log(`${req.method} ${req.url}`);
   next();
 });
 
 // ==========================
-// LOGGER
+// START SERVER FIRST (CRITICAL FIX)
 // ==========================
-export function log(message: string, source = "app") {
-  const formattedTime = new Date().toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit",
-    hour12: true,
-  });
+const port = parseInt(process.env.PORT || "10000", 10);
 
-  console.log(`${formattedTime} [${source}] ${message}`);
-}
+httpServer.listen(port, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${port}`);
+});
 
 // ==========================
-// REQUEST LOGGER
+// INIT APP AFTER START
 // ==========================
-app.use((req, res, next) => {
-  const start = Date.now();
-  const path = req.path;
+(async () => {
+  try {
+    console.log("Starting app setup...");
 
-  let capturedJsonResponse: Record<string, any> | undefined;
-
-  const originalJson = res.json;
-  res.json = function (body: any, ...args: any[]) {
-    capturedJsonResponse = body;
-    return originalJson.apply(res, [body, ...args]);
-  };
-
-  res.on("finish", () => {
-    const duration = Date.now() - start;
-
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
-      }
-
-      log(logLine, "api");
+    // Seed (non-blocking)
+    try {
+      await seedDatabase();
+      console.log("Database seeded");
+    } catch (err) {
+      console.error("Seed skipped:", err);
     }
-  });
 
-  next();
-});
+    // Routes
+    try {
+      await registerRoutes(httpServer, app);
+      console.log("Routes registered");
+    } catch (err) {
+      console.error("Routes failed:", err);
+    }
 
-// ==========================
-// START SERVER FUNCTION
-// ==========================
-async function startServer() {
-  log("🚀 Starting server...", "startup");
-
-  // --------------------------
-  // DATABASE SEED (FORCE LOGGING)
-  // --------------------------
-  try {
-    console.log("🟡 Starting database seed...");
-    await seedDatabase();
-    console.log("🟢 Database seed complete");
-  } catch (err: any) {
-    console.error("💥 SEED CRASH FULL ERROR:");
-    console.error(err);
-    console.error(err?.stack);
-  }
-
-  // --------------------------
-  // ROUTES
-  // --------------------------
-  try {
-    await registerRoutes(httpServer, app);
-    log("✅ Routes registered", "startup");
-  } catch (err: any) {
-    console.error("💥 ROUTES FAILED:");
-    console.error(err);
-  }
-
-  // --------------------------
-  // ERROR HANDLER
-  // --------------------------
-  app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    console.error("❌ Express Error:", err);
-
-    if (res.headersSent) return next(err);
-
-    res.status(status).json({ message });
-  });
-
-  // --------------------------
-  // STATIC / DEV
-  // --------------------------
-  try {
+    // Static
     if (process.env.NODE_ENV === "production") {
-      log("📦 Serving static files...", "startup");
       serveStatic(app);
-    } else {
-      const { setupVite } = await import("./vite");
-      await setupVite(httpServer, app);
-      log("⚡ Vite dev server ready", "startup");
     }
   } catch (err) {
-    console.error("💥 STATIC/VITE FAILED:");
-    console.error(err);
+    console.error("Startup error:", err);
   }
+})();
 
-  // --------------------------
-  // START LISTENING
-  // --------------------------
-  const port = parseInt(process.env.PORT || "5000", 10);
-
-  httpServer.listen(
-    {
-      port,
-      host: "0.0.0.0",
-      reusePort: true,
-    },
-    () => {
-      log(`🚀 Server running on port ${port}`, "startup");
-    },
-  );
-}
-
-// ==========================
-// RUN SERVER
-// ==========================
-startServer().catch((err) => {
-  console.error("💥 STARTUP FAILED:");
-  console.error(err);
+// ERROR HANDLER
+app.use((err: any, _req: Request, res: Response, next: NextFunction) => {
+  console.error("Error:", err);
+  if (res.headersSent) return next(err);
+  res.status(500).json({ message: "Internal Server Error" });
 });
