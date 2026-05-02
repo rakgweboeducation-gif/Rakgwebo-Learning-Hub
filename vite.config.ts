@@ -1,3 +1,7 @@
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
+
 export default defineConfig({
   plugins: [react()],
   root: path.resolve(__dirname, "client"),
@@ -7,5 +11,5 @@ export default defineConfig({
     emptyOutDir: true,
   },
 
-  base: "/", // ✅ ADD THIS (IMPORTANT)
+  base: "/", // required for correct asset paths on Render
 });
