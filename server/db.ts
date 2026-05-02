@@ -10,5 +10,26 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+// ✅ Detect production (Render) vs local
+const isProduction = process.env.NODE_ENV === "production";
+
+// ✅ Create pool with SSL in production
+export const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: isProduction
+    ? {
+        rejectUnauthorized: false,
+      }
+    : false,
+});
+
+// Optional: log connection (helps debugging)
+pool.on("connect", () => {
+  console.log("✅ Connected to database");
+});
+
+pool.on("error", (err) => {
+  console.error("❌ Unexpected DB error:", err);
+});
+
 export const db = drizzle(pool, { schema });

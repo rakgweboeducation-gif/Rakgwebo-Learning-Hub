@@ -1,31 +1,65 @@
 import { AlertCircle } from "lucide-react";
 import { Link } from "wouter";
-import { Button } from "../components/ui/button";
-import { Card, CardContent } from "../components/ui/card";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md mx-4 shadow-xl">
-        <CardContent className="pt-6">
-          <div className="flex mb-4 gap-2">
-            <AlertCircle className="h-8 w-8 text-red-500" />
-            <h1 className="text-2xl font-bold text-gray-900">
-              404 Page Not Found
-            </h1>
-          </div>
+    <div
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "#f9fafb",
+        padding: "20px",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "400px",
+          width: "100%",
+          background: "white",
+          padding: "24px",
+          borderRadius: "10px",
+          boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+          textAlign: "center",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            gap: "10px",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <AlertCircle style={{ color: "red" }} />
+          <h1 style={{ fontSize: "22px", fontWeight: "bold" }}>
+            404 Page Not Found
+          </h1>
+        </div>
 
-          <p className="mt-4 text-sm text-gray-600">
-            Did you forget to add the page to the router?
-          </p>
+        <p style={{ marginTop: "16px", color: "#555" }}>
+          Did you forget to add the page to the router?
+        </p>
 
-          <div className="mt-8">
-            <Link href="/">
-              <Button className="w-full">Back to Home</Button>
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
+        <div style={{ marginTop: "24px" }}>
+          <Link href="/">
+            <a
+              style={{
+                display: "inline-block",
+                width: "100%",
+                padding: "10px",
+                background: "#3b82f6",
+                color: "white",
+                borderRadius: "6px",
+                textDecoration: "none",
+              }}
+            >
+              Back to Home
+            </a>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

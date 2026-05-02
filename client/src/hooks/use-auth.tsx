@@ -9,9 +9,9 @@ type AuthContextType = {
   user: User | null;
   isLoading: boolean;
   error: Error | null;
-  loginMutation: any;
-  logoutMutation: any;
-  registerMutation: any;
+  loginMutation: ReturnType<typeof useMutation>;
+  logoutMutation: ReturnType<typeof useMutation>;
+  registerMutation: ReturnType<typeof useMutation>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -19,14 +19,15 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
 
+  // ✅ FIX: correct endpoint
   const {
     data: user,
     error,
     isLoading,
   } = useQuery<User | null, Error>({
-    queryKey: ["/api/user"],
+    queryKey: ["/api/users/me"],
     queryFn: async () => {
-      const res = await fetch(apiUrl("/api/user"), {
+      const res = await fetch(apiUrl("/api/users/me"), {
         credentials: "include",
       });
 
@@ -46,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return res.json();
     },
     onSuccess: (user: User) => {
-      queryClient.setQueryData(["/api/user"], user);
+      queryClient.setQueryData(["/api/users/me"], user);
       toast({
         title: "Welcome back!",
         description: `Logged in as ${user.username}`,
@@ -67,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return res.json();
     },
     onSuccess: (user: User) => {
-      queryClient.setQueryData(["/api/user"], user);
+      queryClient.setQueryData(["/api/users/me"], user);
       toast({
         title: "Welcome!",
         description: "Account created successfully.",
@@ -87,7 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await apiRequest("POST", "/api/logout");
     },
     onSuccess: () => {
-      queryClient.setQueryData(["/api/user"], null);
+      queryClient.setQueryData(["/api/users/me"], null);
       toast({
         title: "Logged out",
         description: "See you next time!",
